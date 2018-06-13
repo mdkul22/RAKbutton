@@ -188,14 +188,14 @@ void serverLoop() {
           String s, st;
           macAdd = (char*)mac;
           st = "<ul>";
-          s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Hello from SmartButton at ";
-          s += ipStr;
+          s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Mac:";
+          s += macAdd;
           s += "<p>";
           s += st;
           s += "<form method='get' action='a'><label>SSID: </label><br><input name='ssid' length=32><br>";
           s += "<label>PASS:</label><br><input name='pass' length=64><br><label>Server:</label><br>";
           s += "<input name='serv' length=60><br><label>PORT:</label><br><input name='port' length=6>";
-          s += "<br><label>Mac:" + macAdd + "</label><br><label>TYPE:</label><br><input name='type' length=6><br>";
+          s += "</label><br><label>TYPE:</label><br><input name='type' length=6><br>";
 //        s += "<br><label>Topic for button 1:</label><br><input name='topic1' length=60>";
 //        s += "<br><label>Topic for button 2:</label><br><input name='topic2' length=60>";
 //        s += "<br><label>Topic for button 3:</label><br><input name='topic3' length=60>";
