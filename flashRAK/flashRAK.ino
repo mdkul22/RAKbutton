@@ -283,19 +283,17 @@ void beginBootUp()
   char port[s[3].length()+1];
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
-  s[4].toCharArray(port, s[4].length()+1);
+  s[4].toCharArray(type, s[4].length()+1);
   String topic = "tqb/topic";
   char top[topic.length()+1];
   topic.toCharArray(top, topic.length()+1);
 
   Serial.println(ssid);
   Serial.println(pass);
-  Serial.println(port);
   Serial.println(type);
   int status = WL_IDLE_STATUS;
   String sPort(port);
   String Type(type);
-  int p = sPort.toInt();
   client.setServer(server, 1883);
 
   led_off();
@@ -316,11 +314,17 @@ void beginBootUp()
     }
   }
   Serial.println("Connected to wifi");
+  Serial.print("Topic is ");
+  Serial.println(top);
+  Serial.print("Type is");
+  Serial.println(type);
   printWifiStatus();
   while(true)
   {
     if (!client.connected()) {
    reconnect();
+
+   
  }
  client.loop();
  led_off();
