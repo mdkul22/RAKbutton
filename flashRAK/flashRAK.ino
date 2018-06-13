@@ -284,7 +284,9 @@ void beginBootUp()
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
   s[4].toCharArray(port, s[4].length()+1);
-  
+  String topic = "tqb/topic";
+  char top[topic.length()+1];
+  topic.toCharArray(top, topic.length()+1);
 
   Serial.println(ssid);
   Serial.println(pass);
@@ -322,7 +324,6 @@ void beginBootUp()
  }
  client.loop();
  led_off();
-
  if (digitalRead(key1) == 0) {
    delay(50);
    if (digitalRead(key1) == 0) {
@@ -334,7 +335,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'VM': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
@@ -342,7 +343,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'plumbing': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
    }
  else{
@@ -363,7 +364,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'coffee': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
@@ -371,7 +372,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'cleaning': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     } 
     }
     else{
@@ -413,7 +414,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'water': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
@@ -421,7 +422,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'paper': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
  }else{
    Serial.println("client is not connected...") ;
@@ -442,7 +443,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'glasses': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
@@ -450,7 +451,7 @@ void beginBootUp()
       String s;
       s = "{'mac':" + macAdd + ",";
       s += "'handwash': 1}";
-      client.publish("tqb/topic", s.c_str());
+      client.publish(top, s.c_str());
     }
  }else{
    Serial.println("client is not connected...") ;
