@@ -206,6 +206,7 @@ void serverLoop() {
         }
         else if (req.startsWith("/a?ssid="))
         {
+          client.print("yes");
           req.replace("%2F", "/");
           String ssid = req.substring(8,req.indexOf("&"));
           String pass = req.substring(req.indexOf("pass=")+5, req.indexOf('&', req.indexOf("pass=")+5));
@@ -293,7 +294,7 @@ void beginBootUp()
   String sPort(port);
   String Type(type);
   int p = sPort.toInt();
-  client.setServer(server, p);
+  client.setServer(server, 1883);
 
   led_off();
   int cnt = 0;
