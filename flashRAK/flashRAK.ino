@@ -183,13 +183,13 @@ void serverLoop() {
         if (req == "/") {
           IPAddress ip = WiFi.localIP();
           uint8_t* mac;
-          WiFi.macAddress(mac);
+          mac = WiFi.macAddress(mac);
           String ipStr = String(ip[0]); + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
           String s, st;
           macAdd = (char*)mac;
           st = "<ul>";
           s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Mac:";
-          s += macAdd;
+          s += macAdd +"&";
           s += "<p>";
           s += st;
           s += "<form method='get' action='a'><label>SSID: </label><br><input name='ssid' length=32><br>";
