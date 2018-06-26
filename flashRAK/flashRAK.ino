@@ -184,9 +184,9 @@ void serverLoop() {
           IPAddress ip = WiFi.localIP();
           uint8_t* mac;
           mac = WiFi.macAddress(mac);
+          macAdd = (char*)mac;
           String ipStr = String(ip[0]); + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
           String s, st;
-          macAdd = (char*)mac;
           st = "<ul>";
           s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Mac:";
           s += macAdd +"&";
@@ -329,6 +329,9 @@ void beginBootUp()
  client.loop();
  led_off();
  if (digitalRead(key1) == 0) {
+   uint8_t* mac;
+   mac = WiFi.macAddress(mac);
+   macAdd = (char*)mac;
    delay(50);
    if (digitalRead(key1) == 0) {
    led_ctrl(LED1,BLUE);
@@ -337,16 +340,16 @@ void beginBootUp()
     if(Type.equals("0"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'VM': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"VM\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'plumbing': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"plumbing\": \"1\"}";
       client.publish(top, s.c_str());
     }
    }
@@ -366,16 +369,16 @@ void beginBootUp()
     if(Type.equals("0"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'coffee': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"coffee\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'cleaning': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"cleaning\": \"1\"}";
       client.publish(top, s.c_str());
     } 
     }
@@ -416,16 +419,16 @@ void beginBootUp()
       if(Type.equals("0"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'water': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"water\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'paper': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"paper\": \"1\"}";
       client.publish(top, s.c_str());
     }
  }else{
@@ -445,16 +448,16 @@ void beginBootUp()
     if(Type.equals("0"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'glasses': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"glasses\": 1}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
       String s;
-      s = "{'mac':" + macAdd + ",";
-      s += "'handwash': 1}";
+      s = "{\"mac\":" + macAdd + ",";
+      s += "\"handwash\": \"1\"}";
       client.publish(top, s.c_str());
     }
  }else{
