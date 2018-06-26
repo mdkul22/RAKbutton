@@ -114,7 +114,7 @@ void clearFlash()
 
 WiFiClient wifiClient;
 PubSubClient client(wifiClient);
-char clientId[] = "rak-smart-button";
+char clientId[] = "rak-smart-button1";
 
 char myssid[] = "rakbutton";      // your network SSID (name)
 char mypass[] = "password";   // your network password  char channel[] = "1";
@@ -154,8 +154,7 @@ void ConfigureMode() {
   // you're connected now, so print out the status:
   while(1)
   serverLoop();
-}
-String macAdd; // string for storing MAC Address 
+} // string for storing MAC Address 
 // Server Init and functionality
 void serverLoop() {
   led_red();
@@ -180,13 +179,14 @@ void serverLoop() {
         // if you've gotten to the end of the line (received a newline
         // character) and the line is blank, the http request has ended,
         // so you can send a reply
+        String macAdd;
         if (req == "/") {
           IPAddress ip = WiFi.localIP();
           uint8_t* mac;
           mac = WiFi.macAddress(mac);
+          macAdd = (char*)mac;
           String ipStr = String(ip[0]); + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
           String s, st;
-          macAdd = (char*)mac;
           st = "<ul>";
           s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Mac:";
           s += macAdd +"&";
@@ -222,7 +222,7 @@ void serverLoop() {
           Serial.println(pass);
           Serial.println(server);
           Serial.println(port);
-          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type;
+          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type + ";" + macAdd;
           Serial.println(longstr);
           flasher(longstr);
           if(longstr.length())
@@ -282,21 +282,18 @@ void beginBootUp()
   char port[s[3].length()+1];
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
-  s[4].toCharArray(port, s[4].length()+1);
-  char* top = "tqb/topic";
-  Serial.println(top);
+  s[4].toCharArray(type, s[4].length()+1);
+  String macAdd;
+  macAdd = s[5];
+  char top[] = "tqb/topic";
   Serial.println(ssid);
   Serial.println(pass);
   Serial.println(port);
   Serial.println(type);
+  Serial.println(macAdd);
   int status = WL_IDLE_STATUS;
-  String sPort(port);
   String Type(type); 
-  int p = sPort.toInt();
   client.setServer(server, 1883);
-  uint8_t* mac;
-  mac = WiFi.macAddress(mac);
-  macAdd = (char*)mac;
   led_off();
   int cnt = 0;
   while ( status != WL_CONNECTED) {
@@ -329,22 +326,25 @@ void beginBootUp()
    delay(50);
    if (digitalRead(key1) == 0) {
    led_ctrl(LED1,BLUE);
-   Serial.println("key1");
    if(client.connected()){
     if(Type.equals("0"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"VM\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"plumbing\": \"1\"}";
-      client.publish(top, s.c_str());
+      client.publish("tqb/topic", s.c_str());
     }
    }
  else{
@@ -362,16 +362,20 @@ void beginBootUp()
    if(client.connected()){
     if(Type.equals("0"))
     {
-      String s;      
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"coffee\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"cleaning\": \"1\"}";
       client.publish(top, s.c_str());
     } 
@@ -408,20 +412,23 @@ void beginBootUp()
    delay(50);
    if (digitalRead(key3) == 0) {
    led_ctrl(LED3,BLUE);
-
    if(client.connected()){
       if(Type.equals("0"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"water\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"paper\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -441,17 +448,20 @@ void beginBootUp()
    if(client.connected()){
     if(Type.equals("0"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       s += "\"glasses\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
-      String s;
-      s = "{\"mac\":\"" + macAdd + "\",";
-      s += "\"handwash\": \"1\"}";
+      String s = "";
+      s += "{\"mac\":\""; 
+      s += macAdd; 
+      s +="\",";
       client.publish(top, s.c_str());
     }
  }else{
@@ -475,7 +485,7 @@ void reconnect() {
    // Attempt to connect
    if (client.connect(clientId)) {
      Serial.println("connected");
-     // Once connected, publish an announcement...
+     // Once connected, publish an announcement..
    } else {
      Serial.print("failed, rc=");
      count++;
