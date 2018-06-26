@@ -85,8 +85,6 @@ void setup() {
   Serial.begin(9600);
   FlashMemory.read();
   // Enter Configure mode if buf!= 0x00
-  for(i=0;i<20;i++)
-  Serial.println(FlashMemory.buf[i]);
   if(FlashMemory.buf[0] != 0x00)
   {
     clearFlash();
@@ -184,7 +182,13 @@ void serverLoop() {
           IPAddress ip = WiFi.localIP();
           uint8_t* mac;
           mac = WiFi.macAddress(mac);
-          macAdd = (char*)mac;
+          char x[WL_MAC_ADDR_LENGTH+1];
+          for(int i =0; i < WL_MAC_ADDR_LENGTH; i++)
+          {
+            x[i] = *(mac + i);
+          }
+          String MAC(x);
+          macAdd = MAC;
           String ipStr = String(ip[0]); + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
           String s, st;
           st = "<ul>";
@@ -222,7 +226,7 @@ void serverLoop() {
           Serial.println(pass);
           Serial.println(server);
           Serial.println(port);
-          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type + ";" + macAdd;
+          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type;
           Serial.println(longstr);
           flasher(longstr);
           if(longstr.length())
@@ -283,14 +287,19 @@ void beginBootUp()
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
   s[4].toCharArray(type, s[4].length()+1);
-  String macAdd;
-  macAdd = s[5];
+  uint8_t* mac;
+  mac = WiFi.macAddress(mac);
+  char x[WL_MAC_ADDR_LENGTH+1];
+  for(int i =0; i < WL_MAC_ADDR_LENGTH; i++)
+  {
+   x[i] = *(mac + i);
+  }
+  String macAdd(x);
   char top[] = "tqb/topic";
   Serial.println(ssid);
   Serial.println(pass);
   Serial.println(port);
   Serial.println(type);
-  Serial.println(macAdd);
   int status = WL_IDLE_STATUS;
   String Type(type); 
   client.setServer(server, 1883);
