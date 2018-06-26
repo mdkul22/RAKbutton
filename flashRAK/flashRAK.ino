@@ -184,9 +184,9 @@ void serverLoop() {
           IPAddress ip = WiFi.localIP();
           uint8_t* mac;
           mac = WiFi.macAddress(mac);
-          macAdd = (char*)mac;
           String ipStr = String(ip[0]); + "." + String(ip[1]) + "." + String(ip[2]) + "." + String(ip[3]);
           String s, st;
+          macAdd = (char*)mac;
           st = "<ul>";
           s = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n<!DOCTYPE HTML>\r\n<html>Mac:";
           s += macAdd +"&";
@@ -206,7 +206,6 @@ void serverLoop() {
         }
         else if (req.startsWith("/a?ssid="))
         {
-          client.print("yes");
           req.replace("%2F", "/");
           String ssid = req.substring(8,req.indexOf("&"));
           String pass = req.substring(req.indexOf("pass=")+5, req.indexOf('&', req.indexOf("pass=")+5));
@@ -283,19 +282,21 @@ void beginBootUp()
   char port[s[3].length()+1];
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
-  s[4].toCharArray(type, s[4].length()+1);
-  String topic = "tqb/topic";
-  char top[topic.length()+1];
-  topic.toCharArray(top, topic.length()+1);
-
+  s[4].toCharArray(port, s[4].length()+1);
+  char* top = "tqb/topic";
+  Serial.println(top);
   Serial.println(ssid);
   Serial.println(pass);
+  Serial.println(port);
   Serial.println(type);
   int status = WL_IDLE_STATUS;
   String sPort(port);
-  String Type(type);
+  String Type(type); 
+  int p = sPort.toInt();
   client.setServer(server, 1883);
-
+  uint8_t* mac;
+  mac = WiFi.macAddress(mac);
+  macAdd = (char*)mac;
   led_off();
   int cnt = 0;
   while ( status != WL_CONNECTED) {
@@ -307,31 +308,24 @@ void beginBootUp()
     // wait 10 seconds for connection:
     delay(10000);
     cnt++;
-    if(cnt == 5)\
+    if(cnt == 3)\
     {
       clearFlash();
       PowerManagement.softReset();
+  
     }
   }
   Serial.println("Connected to wifi");
-  Serial.print("Topic is ");
-  Serial.println(top);
-  Serial.print("Type is");
-  Serial.println(type);
   printWifiStatus();
   while(true)
   {
     if (!client.connected()) {
    reconnect();
-
-   
  }
  client.loop();
  led_off();
+
  if (digitalRead(key1) == 0) {
-   uint8_t* mac;
-   mac = WiFi.macAddress(mac);
-   macAdd = (char*)mac;
    delay(50);
    if (digitalRead(key1) == 0) {
    led_ctrl(LED1,BLUE);
@@ -340,7 +334,7 @@ void beginBootUp()
     if(Type.equals("0"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"VM\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -348,7 +342,7 @@ void beginBootUp()
     else if(Type.equals("1"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"plumbing\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -368,8 +362,8 @@ void beginBootUp()
    if(client.connected()){
     if(Type.equals("0"))
     {
-      String s;
-      s = "{\"mac\":" + macAdd + ",";
+      String s;      
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"coffee\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -377,7 +371,7 @@ void beginBootUp()
     else if(Type.equals("1"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"cleaning\": \"1\"}";
       client.publish(top, s.c_str());
     } 
@@ -419,7 +413,7 @@ void beginBootUp()
       if(Type.equals("0"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"water\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -427,7 +421,7 @@ void beginBootUp()
     else if(Type.equals("1"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"paper\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -448,15 +442,15 @@ void beginBootUp()
     if(Type.equals("0"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
-      s += "\"glasses\": 1}";
+      s = "{\"mac\":\"" + macAdd + "\",";
+      s += "\"glasses\": \"1\"}";
       client.publish(top, s.c_str());
     }
 
     else if(Type.equals("1"))
     {
       String s;
-      s = "{\"mac\":" + macAdd + ",";
+      s = "{\"mac\":\"" + macAdd + "\",";
       s += "\"handwash\": \"1\"}";
       client.publish(top, s.c_str());
     }
@@ -485,15 +479,15 @@ void reconnect() {
    } else {
      Serial.print("failed, rc=");
      count++;
-     if(count == 10)
+     if(count == 3)
      {
       clearFlash();
       PowerManagement.softReset();
      }
      Serial.print(client.state());
-     Serial.println(" try again in 5 seconds");
+     Serial.println(" try again in 1 seconds");
      // Wait 5 seconds before retrying
-     delay(5000);
+     delay(1000);
    }
  }
 }
@@ -629,3 +623,4 @@ void led_ctrl(uint8_t led_num, uint8_t rgb)
      break;
  }
 }
+
