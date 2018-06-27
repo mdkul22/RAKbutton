@@ -216,6 +216,7 @@ void serverLoop() {
           String server = req.substring(req.indexOf("serv=")+5, req.indexOf('&', req.indexOf("serv=")+5));
           String port = req.substring(req.indexOf("port=")+5, req.indexOf('&', req.indexOf("port=")+5));
           String type = req.substring(req.indexOf("type=")+5, req.indexOf('&', req.indexOf("type=")+5));
+          String mac = req.substring(req.indexOf("mac=")+4, req.indexOf('&', req.indexOf("mac=")+4));
 //          String topic1 = req.substring(req.indexOf("topic1=")+7, req.indexOf('&', req.indexOf("topic1=")+7));
 //          String topic2 = req.substring(req.indexOf("topic2=")+7, req.indexOf('&', req.indexOf("topic2=")+7));
 //          String topic3 = req.substring(req.indexOf("topic3=")+7, req.indexOf('&', req.indexOf("topic3=")+7));
@@ -226,7 +227,7 @@ void serverLoop() {
           Serial.println(pass);
           Serial.println(server);
           Serial.println(port);
-          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type;
+          String longstr = ssid + ";" + pass + ";" + server + ";" + port + ";" + type + ";" + mac;
           Serial.println(longstr);
           flasher(longstr);
           if(longstr.length())
@@ -287,14 +288,8 @@ void beginBootUp()
   s[3].toCharArray(port, s[3].length()+1);
   char type[s[4].length()+1];
   s[4].toCharArray(type, s[4].length()+1);
-  uint8_t* mac;
-  mac = WiFi.macAddress(mac);
-  char x[WL_MAC_ADDR_LENGTH+1];
-  for(int i =0; i < WL_MAC_ADDR_LENGTH; i++)
-  {
-   x[i] = *(mac + i);
-  }
-  String macAdd(x);
+  String macAdd = s[5];
+
   char top[] = "tqb/topic";
   Serial.println(ssid);
   Serial.println(pass);
